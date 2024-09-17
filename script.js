@@ -6,14 +6,39 @@ function addAnnouncement() {
     const announcementText = announcementInput.value.trim();
 
     if (announcementText) {
-        const announcementList = document.getElementById('announcement-list');
-        const newAnnouncement = document.createElement('p');
-        newAnnouncement.textContent = announcementText;
-        announcementList.appendChild(newAnnouncement);
+        // Get the current announcements from localStorage
+        let announcements = JSON.parse(localStorage.getItem('announcements')) || [];
+        
+        // Add the new announcement to the array
+        announcements.push(announcementText);
+        
+        // Save the updated array back to localStorage
+        localStorage.setItem('announcements', JSON.stringify(announcements));
+        
+        // Update the announcement list on the page
+        displayAnnouncements();
+        
+        // Clear the input field
         announcementInput.value = '';
     } else {
         alert('Please enter an announcement.');
     }
+}
+
+// Function to display announcements
+function displayAnnouncements() {
+    const announcementList = document.getElementById('announcement-list');
+    announcementList.innerHTML = '';
+
+    // Retrieve announcements from localStorage
+    const announcements = JSON.parse(localStorage.getItem('announcements')) || [];
+
+    // Create a paragraph element for each announcement
+    announcements.forEach(announcement => {
+        const newAnnouncement = document.createElement('p');
+        newAnnouncement.textContent = announcement;
+        announcementList.appendChild(newAnnouncement);
+    });
 }
 
 // Function to create a reading list table
@@ -58,12 +83,39 @@ function createTable() {
 
         table.appendChild(userRow);
 
-        // Append table to the container
-        listContainer.appendChild(table);
+        // Save the table to localStorage
+        let readingLists = JSON.parse(localStorage.getItem('readingLists')) || [];
+        readingLists.push(table.outerHTML);
+        localStorage.setItem('readingLists', JSON.stringify(readingLists));
+
+        // Update the list container
+        displayReadingLists();
 
         // Clear the name input field
         nameInput.value = '';
     } else {
         alert('Please enter your name.');
     }
+}
+
+// Function to display reading lists
+function displayReadingLists() {
+    const listContainer = document.getElementById('list-container');
+    listContainer.innerHTML = '';
+
+    // Retrieve reading lists from localStorage
+    const readingLists = JSON.parse(localStorage.getItem('readingLists')) || [];
+
+    // Append each table to the container
+    readingLists.forEach(listHTML => {
+        const div = document.createElement('div');
+        div.innerHTML = listHTML;
+        listContainer.appendChild(div);
+    });
+}
+
+// Initial display of data
+window.onload = function() {
+    displayAnnouncements();
+    displayReadingLists();
 }
