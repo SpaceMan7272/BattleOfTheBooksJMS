@@ -1,121 +1,76 @@
 // script.js
 
-// Function to add an announcement
+// Function to add a new announcement
 function addAnnouncement() {
     const announcementInput = document.getElementById('announcement-input');
     const announcementText = announcementInput.value.trim();
 
     if (announcementText) {
-        // Get the current announcements from localStorage
-        let announcements = JSON.parse(localStorage.getItem('announcements')) || [];
-        
-        // Add the new announcement to the array
-        announcements.push(announcementText);
-        
-        // Save the updated array back to localStorage
-        localStorage.setItem('announcements', JSON.stringify(announcements));
-        
-        // Update the announcement list on the page
-        displayAnnouncements();
-        
-        // Clear the input field
-        announcementInput.value = '';
+        const announcementList = document.getElementById('announcement-list');
+        const newAnnouncement = document.createElement('p');
+        newAnnouncement.textContent = announcementText;
+        announcementList.appendChild(newAnnouncement);
+        announcementInput.value = ''; // Clear the input
     } else {
         alert('Please enter an announcement.');
     }
 }
 
-// Function to display announcements
-function displayAnnouncements() {
-    const announcementList = document.getElementById('announcement-list');
-    announcementList.innerHTML = '';
-
-    // Retrieve announcements from localStorage
-    const announcements = JSON.parse(localStorage.getItem('announcements')) || [];
-
-    // Create a paragraph element for each announcement
-    announcements.forEach(announcement => {
-        const newAnnouncement = document.createElement('p');
-        newAnnouncement.textContent = announcement;
-        announcementList.appendChild(newAnnouncement);
-    });
-}
-
-// Function to create a reading list table
+// Function to create a new reading list table
 function createTable() {
     const nameInput = document.getElementById('name-input');
     const name = nameInput.value.trim();
 
     if (name) {
         const listContainer = document.getElementById('list-container');
-
-        // Create a new table
         const table = document.createElement('table');
-
-        // Create table headers
         const headerRow = document.createElement('tr');
-        const nameHeader = document.createElement('th');
-        nameHeader.textContent = 'Name';
-        headerRow.appendChild(nameHeader);
+        const headerCell1 = document.createElement('th');
+        const headerCell2 = document.createElement('th');
+        const headerCell3 = document.createElement('th');
 
-        const books = ['Book 1', 'Book 2', 'Book 3']; // Add your book list here
-        books.forEach(book => {
-            const headerCell = document.createElement('th');
-            headerCell.textContent = book;
-            headerRow.appendChild(headerCell);
-        });
+        headerCell1.textContent = 'Book Title';
+        headerCell2.textContent = 'Read';
+        headerCell3.textContent = 'Date Read';
 
+        headerRow.appendChild(headerCell1);
+        headerRow.appendChild(headerCell2);
+        headerRow.appendChild(headerCell3);
         table.appendChild(headerRow);
 
-        // Create table row for the user
-        const userRow = document.createElement('tr');
-        const nameCell = document.createElement('td');
-        nameCell.textContent = name;
-        userRow.appendChild(nameCell);
+        // Example rows for the table
+        const books = [
+            'Ashlords', 'The Best at It', 'Beyond the Bright Sea', 'Bloom', 'The Boy Who Harnessed the Wind', 'The Bridge Home', 'Freewater', 'Ghost', 'A Good Kind of Trouble', 'I Must Betray You', 'I Will Always Write Back', 'The Lost Year', 'Maybe He Just Likes You', 'Mexikid', 'Paper Things', 'Roller Girl', 'The Screaming Staircase', 'Simon Sort of Says', 'Song for a Whale', 'A Wish in the Dark'
+        ];
 
-        books.forEach(() => {
-            const checkboxCell = document.createElement('td');
-            const checkbox = document.createElement('input');
-            checkbox.type = 'checkbox';
-            checkboxCell.appendChild(checkbox);
-            userRow.appendChild(checkboxCell);
+        books.forEach(book => {
+            const row = document.createElement('tr');
+            const cell1 = document.createElement('td');
+            const cell2 = document.createElement('td');
+            const cell3 = document.createElement('td');
+            
+            cell1.textContent = book;
+            cell2.innerHTML = '<input type="checkbox">';
+            cell3.innerHTML = '<input type="date">';
+            
+            row.appendChild(cell1);
+            row.appendChild(cell2);
+            row.appendChild(cell3);
+            table.appendChild(row);
         });
 
-        table.appendChild(userRow);
+        // Add name of user at the top of the table
+        const userRow = document.createElement('tr');
+        const userNameCell = document.createElement('td');
+        userNameCell.colSpan = 3;
+        userNameCell.textContent = `List for: ${name}`;
+        userNameCell.style.fontWeight = 'bold';
+        userRow.appendChild(userNameCell);
+        table.insertBefore(userRow, table.firstChild);
 
-        // Save the table to localStorage
-        let readingLists = JSON.parse(localStorage.getItem('readingLists')) || [];
-        readingLists.push(table.outerHTML);
-        localStorage.setItem('readingLists', JSON.stringify(readingLists));
-
-        // Update the list container
-        displayReadingLists();
-
-        // Clear the name input field
-        nameInput.value = '';
+        listContainer.appendChild(table);
+        nameInput.value = ''; // Clear the input
     } else {
         alert('Please enter your name.');
     }
-}
-
-// Function to display reading lists
-function displayReadingLists() {
-    const listContainer = document.getElementById('list-container');
-    listContainer.innerHTML = '';
-
-    // Retrieve reading lists from localStorage
-    const readingLists = JSON.parse(localStorage.getItem('readingLists')) || [];
-
-    // Append each table to the container
-    readingLists.forEach(listHTML => {
-        const div = document.createElement('div');
-        div.innerHTML = listHTML;
-        listContainer.appendChild(div);
-    });
-}
-
-// Initial display of data
-window.onload = function() {
-    displayAnnouncements();
-    displayReadingLists();
 }
